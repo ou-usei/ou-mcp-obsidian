@@ -1,34 +1,31 @@
-# Obsidian MCP Server
+# Obsidian MCP 服务器
 
-[![smithery badge](https://smithery.ai/badge/obsidian-mcp)](https://smithery.ai/server/obsidian-mcp)
+一个[MCP (Model Context Protocol)](https://modelcontextprotocol.io)服务器，使AI助手能够与Obsidian仓库交互，提供读取、创建、编辑和管理笔记与标签的工具。
 
-An [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that enables AI assistants to interact with Obsidian vaults, providing tools for reading, creating, editing and managing notes and tags.
+## 警告！
 
-## Warning!!!
+此MCP拥有读写权限。请在使用obsidian-mcp管理笔记前备份您的Obsidian仓库。推荐使用git或其他备份方法。
 
-This MCP has read and write access (if you allow it). Please. PLEASE backup your Obsidian vault prior to using obsidian-mcp to manage your notes. I recommend using git, but any backup method will work. These tools have been tested, but not thoroughly, and this MCP is in active development.
+## 功能
 
-## Features
+- 读取和搜索仓库中的笔记
+- 创建新笔记和目录
+- 编辑现有笔记
+- 移动和删除笔记
+- 管理标签（添加、删除、重命名）
+- 搜索仓库内容
 
-- Read and search notes in your vault
-- Create new notes and directories
-- Edit existing notes
-- Move and delete notes
-- Manage tags (add, remove, rename)
-- Search vault contents
+## 要求
 
-## Requirements
+- Node.js 20或更高版本
+- Obsidian仓库
 
-- Node.js 20 or higher (might work on lower, but I haven't tested it)
-- An Obsidian vault
+## 安装
 
-## Install
+### 手动安装
 
-### Installing Manually
+添加到Claude Desktop配置文件：
 
-Add to your Claude Desktop configuration:
-
-- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
 - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
 
 ```json
@@ -36,117 +33,45 @@ Add to your Claude Desktop configuration:
     "mcpServers": {
         "obsidian": {
             "command": "npx",
-            "args": ["-y", "obsidian-mcp", "/path/to/your/vault", "/path/to/your/vault2"]
+            "args": ["-y", "obsidian-mcp", "C:\\您的仓库路径"]
         }
     }
 }
 ```
 
-Replace `/path/to/your/vault` with the absolute path to your Obsidian vault. For example:
+保存配置后重启Claude Desktop。如果连接成功，您应该能看到锤子图标。
 
-MacOS/Linux:
-
-```json
-"/Users/username/Documents/MyVault"
-```
-
-Windows:
-
-```json
-"C:\\Users\\username\\Documents\\MyVault"
-```
-
-Restart Claude for Desktop after saving the configuration. You should see the hammer icon appear, indicating the server is connected.
-
-If you have connection issues, check the logs at:
-
-- MacOS: `~/Library/Logs/Claude/mcp*.log`
+如果遇到连接问题，请查看日志：
 - Windows: `%APPDATA%\Claude\logs\mcp*.log`
 
+## 可用工具
 
-### Installing via Smithery
-Warning: I am not affiliated with Smithery. I have not tested using it and encourage users to install manually if they can.
+- `read-note` - 读取笔记内容
+- `create-note` - 创建新笔记
+- `edit-note` - 编辑现有笔记
+- `delete-note` - 删除笔记
+- `move-note` - 移动笔记
+- `create-directory` - 创建新目录
+- `search-vault` - 搜索仓库中的笔记
+- `add-tags` - 添加标签
+- `remove-tags` - 删除标签
+- `rename-tag` - 重命名标签
+- `manage-tags` - 列出和组织标签
+- `list-available-vaults` - 列出所有可用仓库
 
-To install Obsidian for Claude Desktop automatically via [Smithery](https://smithery.ai/server/obsidian-mcp):
+## 故障排除
 
-```bash
-npx -y @smithery/cli install obsidian-mcp --client claude
-```
+常见问题：
 
-## Development
+1. **服务器未在Claude Desktop中显示**
+   - 检查配置文件语法
+   - 确保仓库路径是绝对路径且存在
+   - 重启Claude Desktop
 
-```bash
-# Clone the repository
-git clone https://github.com/StevenStavrakis/obsidian-mcp
-cd obsidian-mcp
+2. **权限错误**
+   - 确保仓库路径可读/可写
+   - 检查仓库中的文件权限
 
-# Install dependencies
-npm install
-
-# Build
-npm run build
-```
-
-Then add to your Claude Desktop configuration:
-
-```json
-{
-    "mcpServers": {
-        "obsidian": {
-            "command": "node",
-            "args": ["<absolute-path-to-obsidian-mcp>/build/main.js", "/path/to/your/vault", "/path/to/your/vault2"]
-        }
-    }
-}
-```
-
-## Available Tools
-
-- `read-note` - Read the contents of a note
-- `create-note` - Create a new note
-- `edit-note` - Edit an existing note
-- `delete-note` - Delete a note
-- `move-note` - Move a note to a different location
-- `create-directory` - Create a new directory
-- `search-vault` - Search notes in the vault
-- `add-tags` - Add tags to a note
-- `remove-tags` - Remove tags from a note
-- `rename-tag` - Rename a tag across all notes
-- `manage-tags` - List and organize tags
-- `list-available-vaults` - List all available vaults (helps with multi-vault setups)
-
-## Documentation
-
-Additional documentation can be found in the `docs` directory:
-
-- `creating-tools.md` - Guide for creating new tools
-- `tool-examples.md` - Examples of using the available tools
-
-## Security
-
-This server requires access to your Obsidian vault directory. When configuring the server, make sure to:
-
-- Only provide access to your intended vault directory
-- Review tool actions before approving them
-
-## Troubleshooting
-
-Common issues:
-
-1. **Server not showing up in Claude Desktop**
-   - Verify your configuration file syntax
-   - Make sure the vault path is absolute and exists
-   - Restart Claude Desktop
-
-2. **Permission errors**
-   - Ensure the vault path is readable/writable
-   - Check file permissions in your vault
-
-3. **Tool execution failures**
-   - Check Claude Desktop logs at:
-     - macOS: `~/Library/Logs/Claude/mcp*.log`
-     - Windows: `%APPDATA%\Claude\logs\mcp*.log`
-
-## License
+## 许可证
 
 MIT
